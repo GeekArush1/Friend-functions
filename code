@@ -1,0 +1,74 @@
+#include<iostream>
+using namespace std;
+class C;
+class D;
+class A
+{
+private:
+    int x;
+    friend class B;    //friend class and function can be declared in any section of the class i.e. public or private or protected.
+public:
+    A()
+    {
+        x=10;
+    }
+//    void try_to_access_B(B); Friendship is not mutual. If class A is a friend of B, then B doesn’t become a friend of A automatically.
+//    friend void show();
+    friend void print(A,C);
+    void showD(D&);
+};
+class B
+{ //A friend class can access private and protected members of other class in which it is declared as friend.
+private:
+    int z;
+public:
+    void display(A &t)
+    {
+        cout<<endl<<"The value of x="<<t.x;
+    }
+};
+class C{
+private:
+    int y;
+public:
+    C(){
+        y=10;
+    }
+    friend void print(A,C);
+//    friend void print(C,A) This is a totally different function from above one as it has different parameters.
+};
+class D:public A{
+private:
+    int b;
+public:
+    D(){
+        b=10;
+    }
+    friend void A::showD(D& x);//function of class A made a friend function in class D
+};
+void A::showD(D& x){//function parameter contains address of object of class D.
+    cout<<x.b<<endl;//Member friend function of class A accessing the private member of class B.
+};
+void print(A a, C c){//global friend function
+    cout<<"\nInside friend function of A and C class"<<endl;
+    cout<<"x="<<a.x<<endl;
+    cout<<"y="<<c.y<<endl;
+}
+//void show(){
+//    A a;
+//    D d;
+//    cout<<"Default value of a of Class A is "<<a.x; // This statement will work friend function of same class is trying to access its private members.
+//   cout<<"Default value of a of Class D is "<<d.b; //b is a private member of D. Thus, we can say that Friendship is not inherited.
+//}
+int main()
+{
+    A _a;
+    B _b;
+    C _c;
+    D _d;
+    _b.display(_a);
+//    cout<<_b.x<<endl; //Friend function and classes can access even private members of their friend classes but object of friend class can't access directly access either member or function of the friend class.
+    print(_a,_c);//When a global friend function is called neither name of object nor dot operator is used. However, it may accept the object as argument whose value it want to access.
+    _a.showD(_d);//showD function was declared in A. Then it was updated to be as a friend function of class D. Body of this function was written outside the class as friend function can access private and protected members of another class. But what's special in it as a member function can also access its private members. Answer is that friend function can be a member of another class or a global function.
+    return 0;
+}
